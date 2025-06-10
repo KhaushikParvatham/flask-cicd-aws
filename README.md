@@ -30,7 +30,3 @@ This project demonstrates a simple but complete DevOps pipeline that:
 ## 🔐 Security
 - SSH key stored as GitHub Secret (`EC2_SSH_KEY`)
 - Host IP stored in GitHub Secret (`EC2_HOST`)
-
-## 🌐 Live Demo
-If applicable, add your public EC2 IP here:  
-**http://<your-ec2-ip>/**
