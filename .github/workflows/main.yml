@@ -1,0 +1,35 @@
+name: CI/CD Pipeline - Flask App
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout source
+      uses: actions/checkout@v3
+
+    - name: Copy files to EC2 & deploy
+      uses: appleboy/scp-action@v0.1.4
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ubuntu
+        key: ${{ secrets.EC2_SSH_KEY }}
+        source: "."
+        target: "~/flaskapp"
+
+    - name: SSH and deploy Docker container
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ubuntu
+        key: ${{ secrets.EC2_SSH_KEY }}
+        script: |
+          cd ~/flaskapp
+          docker stop flaskapp || true
+          docker rm flaskapp || true
+          docker build -t flaskapp .
+          docker run -d -p 80:3000 --name flaskapp flaskapp
